@@ -7,6 +7,8 @@ import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/InputField';
 import { useLoginUserMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
+import { withUrqlClient } from 'next-urql';
+import { createUrqlClient } from '../utils/createUrqlClient';
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -18,6 +20,7 @@ const Login: React.FC<{}> = ({}) => {
         initialValues={{ username: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
           const response = await login({ options: values });
+
           if (response.data?.login.errors) {
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user) {
@@ -51,4 +54,4 @@ const Login: React.FC<{}> = ({}) => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);
